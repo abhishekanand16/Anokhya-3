@@ -80,7 +80,7 @@ function ParticipantFields({
 
         <div>
           <label className="field-label" htmlFor={`${prefix}.yearSem`}>
-            Year / Sem
+            Year
           </label>
           <input id={`${prefix}.yearSem`} name={`${prefix}.yearSem`} required className="field-input" />
           {error("yearSem") && <p className="field-error">{error("yearSem")}</p>}

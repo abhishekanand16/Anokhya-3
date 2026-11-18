@@ -7,21 +7,18 @@ export function AboutSection() {
         <div>
           <p className="eyebrow mb-3">About the fest</p>
           <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-            Six events. One day. Zero limits.
+            Four events. One day. Zero limits.
           </h2>
         </div>
 
         <p className="text-balance text-lg leading-relaxed text-[var(--color-muted-foreground)] sm:col-span-2">
-          {site.name}, the prestigious tech fest organized by the {site.organizer.department} at{" "}
-          {site.organizer.college}, features 6 dynamic technical events open to both individual and group
-          participation. Register for an event and stand a chance to win vouchers, exciting goodies, prize money,
-          and more — a celebration of innovation where technology converges with the unforeseen.
+         Get ready to showcase your skills and creativity at {site.name}, the prestigious tech fest organized by the {site.organizer.department} Department of {site.organizer.college} Featuring four exciting technical events open to group participation, it's your chance to compete, collaborate, tackle challenges, and win exciting cash prizes. Gather your team and be part of an unforgettable tech experience!
         </p>
       </div>
 
       <dl className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-4">
         {[
-          { label: "Events", value: "6" },
+          { label: "Events", value: "4" },
           { label: "Prize pool", value: site.prizePool },
           { label: "Expected footfall", value: site.expectedFootfall },
           { label: "Venue", value: site.venue.name },

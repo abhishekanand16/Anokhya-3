@@ -21,7 +21,7 @@ export const site = {
     aegis: "DSCE Innovation Council",
   },
   prizePool: "₹20,000",
-  expectedFootfall: "1,000+",
+  expectedFootfall: "150+",
   url: "https://anokhya.site",
   instagram: "https://instagram.com/_anokhya",
   instagramHandle: "@_anokhya",

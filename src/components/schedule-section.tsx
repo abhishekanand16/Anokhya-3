@@ -1,4 +1,11 @@
-import { dayEndMinutes, dayStartMinutes, scheduleItems, type ScheduleItem } from "@/data/schedule";
+
+import {
+  dayEndMinutes,
+  dayStartMinutes,
+  scheduleItems,
+  type ScheduleItem,
+} from "@/data/schedule";
+
 import { site } from "@/data/site";
 import { formatMinutes, cn } from "@/lib/utils";
 
@@ -11,6 +18,7 @@ const laneColor: Record<ScheduleItem["lane"], string> = {
 };
 
 const totalMinutes = dayEndMinutes - dayStartMinutes;
+
 const hourTicks = Array.from(
   { length: (dayEndMinutes - dayStartMinutes) / 60 + 1 },
   (_, i) => dayStartMinutes + i * 60,
@@ -19,17 +27,33 @@ const hourTicks = Array.from(
 export function ScheduleSection() {
   return (
     <section id="schedule" className="section py-20 sm:py-28">
-      <div data-enter="reveal" className="mb-10 flex flex-wrap items-end justify-between gap-4">
+      <div
+        data-enter="reveal"
+        className="mb-10 flex flex-wrap items-end justify-between gap-4"
+      >
         <div className="max-w-xl">
           <p className="eyebrow mb-3">Schedule</p>
-          <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">Day-of timeline</h2>
-          <p className="mt-3 text-[var(--color-muted-foreground)]">{site.date.display} · {site.venue.name}</p>
+
+          <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+            Day-of timeline
+          </h2>
+
+          <p className="mt-3 text-[var(--color-muted-foreground)]">
+            {site.date.display} · {site.venue.name}
+          </p>
         </div>
-        <span className="chip">Tentative — final timings announced closer to the event</span>
+
+        <span className="chip">
+          Tentative — final timings announced closer to the event
+        </span>
       </div>
 
-      <div data-enter="reveal" className="glass-panel overflow-x-auto p-4 sm:p-6">
+      <div
+        data-enter="reveal"
+        className="glass-panel overflow-x-auto p-4 sm:p-6"
+      >
         <div className="min-w-[760px]">
+          {/* Timeline hour labels */}
           <div className="flex pl-44">
             {hourTicks.map((minute) => (
               <div
@@ -41,17 +65,25 @@ export function ScheduleSection() {
             ))}
           </div>
 
+          {/* Event rows */}
           <div className="mt-3 flex flex-col gap-2">
             {scheduleItems.map((item) => {
-              const leftPct = ((item.start - dayStartMinutes) / totalMinutes) * 100;
-              const widthPct = ((item.end - item.start) / totalMinutes) * 100;
+              const leftPct =
+                ((item.start - dayStartMinutes) / totalMinutes) * 100;
+
+              const widthPct =
+                ((item.end - item.start) / totalMinutes) * 100;
+
               const color = laneColor[item.lane];
 
               return (
                 <div key={item.slug} className="flex items-center">
+                  {/* Event name */}
                   <div className="w-44 shrink-0 pr-3 text-sm font-medium text-[var(--color-foreground)]">
                     {item.label}
                   </div>
+
+                  {/* Timeline bar */}
                   <div
                     className="relative h-11 flex-1 rounded-lg"
                     style={{

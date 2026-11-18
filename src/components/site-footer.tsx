@@ -10,9 +10,9 @@ export function SiteFooter() {
   return (
     <footer id="contact" className="border-t border-[var(--color-border)]">
       <div data-enter="reveal" className="section py-16 text-center">
-        <p className="eyebrow mb-3">Get in touch</p>
+        <p className="eyebrow mb-3">Get in touch with us</p>
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Questions, or want to sponsor {site.name}?
+          {site.name}
         </h2>
         <p className="mx-auto mt-3 max-w-md text-[var(--color-muted-foreground)]">
           Reach out on Instagram — we reply fast.

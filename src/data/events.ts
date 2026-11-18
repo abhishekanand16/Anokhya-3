@@ -1,3 +1,4 @@
+
 export type EventCategory = "AI" | "Gaming" | "Outdoor" | "Creative";
 
 export type EventDetail = {
@@ -16,9 +17,7 @@ export type EventDetail = {
 };
 
 /**
- * All 6 Anokhya 3.0 events, transcribed from the official sponsorship deck.
- * `slug` is used in URLs and as the `event_slug` value stored in Supabase —
- * keep it stable once registrations are live.
+ * All 4 Anokhya 3.0 events.
  */
 export const events: EventDetail[] = [
   {
@@ -30,58 +29,52 @@ export const events: EventDetail[] = [
       "Participants are shown an image and must create a prompt that accurately describes or recreates it using AI tools.",
     judging:
       "Based on prompt accuracy, creativity, clarity, and how closely the AI-generated output matches the given image.",
-    teamSize: { min: 1, max: 1 },
+    rules:
+      "Limited to 15 teams. Registrations are on a first-come, first-served (FCFS) basis.",
+    teamSize: { min: 2, max: 2 },
+    capacityNote: "Limited to 15 teams (FCFS)",
   },
-  {
-    slug: "ai-or-a-lie",
-    name: "AI or a Lie",
-    category: "AI",
-    eventType: "Artificial Intelligence identification and awareness competition.",
-    format:
-      "Participants are presented with different images, statements, or content and must identify whether they are AI-generated or real.",
-    judging: "Based on correct identification, accuracy, and response time.",
-    teamSize: { min: 1, max: 1 },
-  },
+
   {
     slug: "bgmi",
     name: "BGMI",
     category: "Gaming",
     eventType: "Mobile-only BGMI tournament.",
-    format: "Teams of 4 players compete in battle royale matches.",
-    rules: "Strict fair-play rules ensure a competitive environment.",
+    format:
+      "An offline battle royale tournament featuring 16 teams of 4 players competing against each other.",
+    rules:
+      "Limited to 16 teams. All matches will be conducted offline on the day of the event. Strict fair-play rules apply.",
     teamSize: { min: 4, max: 4 },
-    capacityNote: "Limited to 4 teams",
+    capacityNote: "16 teams — Offline tournament",
   },
-  {
-    slug: "capture-x",
-    name: "Capture X",
-    category: "Creative",
-    eventType: "Photography competition.",
-    format: "Capture creative photos based on the given theme.",
-    task: "Click and submit your best photograph showcasing creativity and perspective.",
-    judging: "Based on creativity, composition, and originality.",
-    teamSize: { min: 1, max: 1 },
-  },
+
   {
     slug: "treasure-hunt",
     name: "Treasure Hunt",
     category: "Outdoor",
     eventType: "Campus-wide puzzle and clue-solving hunt.",
-    format: "Teams solve puzzles and decipher clues to uncover a hidden treasure.",
-    task: "Follow clues and complete challenges to find the hidden treasure.",
-    judging: "Based on problem-solving, strategy, and teamwork.",
-    teamSize: { min: 3, max: 3 },
+    format:
+      "Teams participate in multiple qualification rounds, solving puzzles and deciphering clues to uncover a hidden treasure. Only the top-performing teams from each round advance to the subsequent round.",
+    task:
+      "Follow clues, solve puzzles, and complete challenges to progress through the qualification rounds.",
+    judging:
+      "Based on problem-solving abilities, strategy, accuracy, and teamwork throughout the qualification rounds.",
+    rules:
+      "There is no restriction on the number of participating teams. Teams will compete in qualification rounds, with only selected top-performing teams advancing to the next round.",
+    teamSize: { min: 4, max: 5 },
   },
+
   {
     slug: "radiant-clash",
     name: "Radiant Clash — Valorant Showdown",
     category: "Gaming",
     eventType: "PC-based Valorant tournament for competitive gaming enthusiasts.",
     format:
-      "32 teams of 5 players compete through online qualifiers, with the top 8 advancing to offline finals.",
-    rules: "Strict fair-play ensured for a competitive environment.",
+      "32 teams of 5 players compete in online qualification rounds. The top 8 teams will qualify for the offline finals conducted on the day of the event.",
+    rules:
+      "Limited to 32 teams. Online qualification round dates will be announced soon. The selected teams will advance to the offline finals. Strict fair-play rules apply.",
     teamSize: { min: 5, max: 5 },
-    capacityNote: "Limited to 32 teams",
+    capacityNote: "32 teams — Online qualifiers, offline finals",
   },
 ];
 
