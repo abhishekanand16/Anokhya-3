@@ -27,3 +27,5 @@ next-env.d.ts
 # local backups
 *.bak
 *.regbak
+
+*.fixbak

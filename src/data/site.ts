@@ -8,8 +8,8 @@ export const site = {
   shortDescription:
     "A technical fest by the Department of Artificial Intelligence & Machine Learning at Dayananda Sagar College of Engineering, featuring 6 events open to individual and group participation.",
   date: {
-    display: "Saturday, 28 November 2026",
-    iso: "2026-11-28",
+    display: "Saturday, 4 December 2026",
+    iso: "2026-12-04",
   },
   venue: {
     name: "DSCE Campus",
