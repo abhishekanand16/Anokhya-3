@@ -1,90 +1,74 @@
-"use client";
+﻿"use client";
 
-import { useActionState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { useActionState, useRef, useState } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
+import { ArrowRight, CheckCircle2, Crown, Users } from "lucide-react";
 import type { EventDetail } from "@/data/events";
 import { registerForEvent } from "@/app/events/[slug]/actions";
 import { initialRegisterState } from "@/lib/register-state";
 import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
 
+function Field({
+  id,
+  label,
+  error,
+  ...props
+}: { id: string; label: string; error?: string } & InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div>
+      <label className="field-label" htmlFor={id}>
+        {label}
+      </label>
+      <input id={id} name={id} required className="field-input" {...props} />
+      {error && <p className="field-error">{error}</p>}
+    </div>
+  );
+}
+
 function ParticipantFields({
   prefix,
   heading,
+  badge,
   fieldErrors,
 }: {
   prefix: string;
   heading: string;
+  badge: ReactNode;
   fieldErrors?: Record<string, string>;
 }) {
   const error = (field: string) => fieldErrors?.[`${prefix}.${field}`];
 
   return (
-    <fieldset className="glass-panel space-y-4 p-5">
-      <legend className="mb-1 text-sm font-semibold text-[var(--color-foreground)]">{heading}</legend>
+    <fieldset className="reg-section">
+      <legend className="reg-legend">
+        <span className="reg-legend-inner">
+          <span className="reg-badge">{badge}</span>
+          {heading}
+        </span>
+      </legend>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className="field-label" htmlFor={`${prefix}.name`}>
-            Name
-          </label>
-          <input id={`${prefix}.name`} name={`${prefix}.name`} required className="field-input" autoComplete="name" />
-          {error("name") && <p className="field-error">{error("name")}</p>}
-        </div>
-
-        <div>
-          <label className="field-label" htmlFor={`${prefix}.usn`}>
-            USN
-          </label>
-          <input id={`${prefix}.usn`} name={`${prefix}.usn`} required className="field-input" />
-          {error("usn") && <p className="field-error">{error("usn")}</p>}
-        </div>
-
-        <div>
-          <label className="field-label" htmlFor={`${prefix}.phone`}>
-            Phone number
-          </label>
-          <input
-            id={`${prefix}.phone`}
-            name={`${prefix}.phone`}
-            type="tel"
-            required
-            className="field-input"
-            autoComplete="tel"
-          />
-          {error("phone") && <p className="field-error">{error("phone")}</p>}
-        </div>
-
-        <div>
-          <label className="field-label" htmlFor={`${prefix}.email`}>
-            Email ID
-          </label>
-          <input
-            id={`${prefix}.email`}
-            name={`${prefix}.email`}
-            type="email"
-            required
-            className="field-input"
-            autoComplete="email"
-          />
-          {error("email") && <p className="field-error">{error("email")}</p>}
-        </div>
-
-        <div>
-          <label className="field-label" htmlFor={`${prefix}.department`}>
-            Department
-          </label>
-          <input id={`${prefix}.department`} name={`${prefix}.department`} required className="field-input" />
-          {error("department") && <p className="field-error">{error("department")}</p>}
-        </div>
-
-        <div>
-          <label className="field-label" htmlFor={`${prefix}.yearSem`}>
-            Year
-          </label>
-          <input id={`${prefix}.yearSem`} name={`${prefix}.yearSem`} required className="field-input" />
-          {error("yearSem") && <p className="field-error">{error("yearSem")}</p>}
-        </div>
+      <div className="reg-grid grid gap-4 sm:grid-cols-2">
+        <Field id={`${prefix}.name`} label="Name" error={error("name")} autoComplete="name" placeholder="Full name" />
+        <Field id={`${prefix}.usn`} label="USN" error={error("usn")} />
+        <Field
+          id={`${prefix}.phone`}
+          label="Phone number"
+          error={error("phone")}
+          type="tel"
+          autoComplete="tel"
+          placeholder="10-digit mobile number"
+        />
+        <Field
+          id={`${prefix}.email`}
+          label="Email ID"
+          error={error("email")}
+          type="email"
+          autoComplete="email"
+          placeholder="name@example.com"
+        />
+        <Field id={`${prefix}.department`} label="Department" error={error("department")} />
+        <Field id={`${prefix}.yearSem`} label="Year" error={error("yearSem")} />
       </div>
     </fieldset>
   );
@@ -92,15 +76,27 @@ function ParticipantFields({
 
 export function RegisterForm({ event }: { event: EventDetail }) {
   const [state, formAction, isPending] = useActionState(registerForEvent, initialRegisterState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [progress, setProgress] = useState(0);
   const extraMembers = event.teamSize.max - 1;
   const isTeamEvent = extraMembers > 0;
 
+  const updateProgress = () => {
+    const form = formRef.current;
+    if (!form) return;
+    const inputs = Array.from(form.querySelectorAll<HTMLInputElement>("input[required]"));
+    const filled = inputs.filter((input) => input.value.trim() !== "").length;
+    setProgress(inputs.length ? Math.round((filled / inputs.length) * 100) : 0);
+  };
+
   if (state.status === "success") {
     return (
-      <div className="glass-panel-raised flex flex-col items-center gap-3 p-10 text-center">
-        <CheckCircle2 size={40} className="text-[var(--color-brand)]" aria-hidden />
-        <h3 className="text-xl font-semibold">{state.message}</h3>
-        <p className="text-sm text-[var(--color-muted-foreground)]">
+      <div className="reg-shell flex flex-col items-center gap-3 py-14 text-center">
+        <div className="reg-hero-icon">
+          <CheckCircle2 size={28} strokeWidth={1.6} aria-hidden />
+        </div>
+        <h3 className="mt-2 text-2xl font-semibold tracking-tight">{state.message}</h3>
+        <p className="max-w-sm text-sm leading-relaxed text-[var(--color-muted-foreground)]">
           Follow {site.instagramHandle} on Instagram for updates on {event.name}.
         </p>
       </div>
@@ -108,46 +104,76 @@ export function RegisterForm({ event }: { event: EventDetail }) {
   }
 
   return (
-    <form action={formAction} className="space-y-5" noValidate>
-      <input type="hidden" name="eventSlug" value={event.slug} />
-
-      {isTeamEvent && (
+    <div className="reg-shell">
+      <div className="reg-head">
         <div>
-          <label className="field-label" htmlFor="teamName">
-            Team name
-          </label>
-          <input id="teamName" name="teamName" required className="field-input max-w-sm" />
-          {state.fieldErrors?.teamName && <p className="field-error">{state.fieldErrors.teamName}</p>}
+          <p className="reg-kicker">Registration</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight">Register for {event.name}</h2>
         </div>
-      )}
+        <span className="reg-percent">{progress}%</span>
+      </div>
+      <div className="reg-progress" aria-hidden>
+        <span style={{ width: `${progress}%` }} />
+      </div>
 
-      <ParticipantFields
-        prefix="leader"
-        heading={isTeamEvent ? "Team leader" : "Participant details"}
-        fieldErrors={state.fieldErrors}
-      />
+      <form ref={formRef} action={formAction} onChange={updateProgress} className="mt-6 space-y-4" noValidate>
+        <input type="hidden" name="eventSlug" value={event.slug} />
 
-      {Array.from({ length: extraMembers }, (_, i) => (
+        {isTeamEvent && (
+          <div className="reg-section">
+            <div className="reg-legend">
+              <span className="reg-legend-inner">
+                <span className="reg-badge">
+                  <Users size={14} aria-hidden />
+                </span>
+                Team name
+              </span>
+            </div>
+            <div className="reg-grid">
+              <input
+                id="teamName"
+                name="teamName"
+                required
+                className="field-input"
+                placeholder="Pick a name for your team"
+                aria-label="Team name"
+              />
+              {state.fieldErrors?.teamName && <p className="field-error">{state.fieldErrors.teamName}</p>}
+            </div>
+          </div>
+        )}
+
         <ParticipantFields
-          key={i}
-          prefix={`members.${i}`}
-          heading={`Team member ${i + 2}`}
+          prefix="leader"
+          heading={isTeamEvent ? "Team leader" : "Participant details"}
+          badge={<Crown size={14} aria-hidden />}
           fieldErrors={state.fieldErrors}
         />
-      ))}
 
-      {state.status === "error" && !state.fieldErrors && (
-        <p className="rounded-xl border border-[#f28b82]/30 bg-[#f28b82]/10 px-4 py-3 text-sm text-[#f28b82]">
-          {state.message}
-        </p>
-      )}
-      {state.status === "error" && state.fieldErrors && (
-        <p className="text-sm text-[#f28b82]">{state.message}</p>
-      )}
+        {Array.from({ length: extraMembers }, (_, i) => (
+          <ParticipantFields
+            key={i}
+            prefix={`members.${i}`}
+            heading={`Team member ${i + 2}`}
+            badge={i + 2}
+            fieldErrors={state.fieldErrors}
+          />
+        ))}
 
-      <button type="submit" disabled={isPending} className={cn("btn-primary w-full sm:w-auto")}>
-        {isPending ? "Submitting…" : "Submit registration"}
-      </button>
-    </form>
+        {state.status === "error" && !state.fieldErrors && (
+          <p className="rounded-xl border border-[#f28b82]/30 bg-[#f28b82]/10 px-4 py-3 text-sm text-[#f28b82]">
+            {state.message}
+          </p>
+        )}
+        {state.status === "error" && state.fieldErrors && (
+          <p className="text-sm text-[#f28b82]">{state.message}</p>
+        )}
+
+        <button type="submit" disabled={isPending} className={cn("reg-submit", isPending && "is-pending")}>
+          {isPending ? "Submitting..." : "Submit registration"}
+          {!isPending && <ArrowRight size={16} aria-hidden />}
+        </button>
+      </form>
+    </div>
   );
 }

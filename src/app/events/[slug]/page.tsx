@@ -1,10 +1,18 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Camera, Users } from "lucide-react";
 import { events, getEventBySlug } from "@/data/events";
-import { categoryColor, eventIcons } from "@/lib/event-visuals";
+import { eventIcons } from "@/lib/event-visuals";
 import { RegisterForm } from "@/components/register-form";
+
+const accents: Record<string, string> = {
+  "picture-to-prompt": "#6cc3d5",
+  bgmi: "#e0a458",
+  "treasure-hunt": "#d9b95b",
+  "radiant-clash": "#e0707a",
+};
 
 export function generateStaticParams() {
   return events.map((event) => ({ slug: event.slug }));
@@ -30,7 +38,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   if (!event) notFound();
 
   const Icon = eventIcons[event.slug] ?? Camera;
-  const color = categoryColor[event.category];
+  const accent = accents[event.slug] ?? "#e8a255";
   const teamLabel = event.teamSize.max === 1 ? "Solo participation" : `Teams of ${event.teamSize.max}`;
 
   const details: { label: string; value: string }[] = [
@@ -41,7 +49,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   ];
 
   return (
-    <section className="section py-14 sm:py-20">
+    <section className="section py-14 sm:py-20" style={{ "--accent": accent } as CSSProperties}>
       <Link
         href="/#events"
         className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
@@ -50,40 +58,35 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         All events
       </Link>
 
-      <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-start">
-        <div>
-          <div
-            className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl"
-            style={{ backgroundColor: `${color}1a`, color }}
-          >
-            <Icon size={24} aria-hidden />
+      <div className="grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-start">
+        <div className="lg:sticky lg:top-24">
+          <div className="reg-hero-icon">
+            <Icon size={26} strokeWidth={1.6} aria-hidden />
           </div>
 
-          <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{event.name}</h1>
-          <p className="mt-3 text-lg text-[var(--color-muted-foreground)]">{event.eventType}</p>
+          <p className="reg-kicker mt-6">{event.category}</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{event.name}</h1>
+          <p className="mt-3 text-base leading-relaxed text-[var(--color-muted-foreground)]">{event.eventType}</p>
 
           <div className="mt-5 flex flex-wrap gap-2">
-            <span className="chip" style={{ color, borderColor: `${color}40` }}>
+            <span className="reg-chip">
               <Users size={14} aria-hidden />
               {teamLabel}
             </span>
-            {event.capacityNote && <span className="chip">{event.capacityNote}</span>}
+            {event.capacityNote && <span className="reg-chip reg-chip-muted">{event.capacityNote}</span>}
           </div>
 
-          <dl className="mt-8 space-y-6">
+          <div className="mt-8 space-y-3">
             {details.map((detail) => (
-              <div key={detail.label}>
-                <dt className="eyebrow mb-1.5">{detail.label}</dt>
-                <dd className="leading-relaxed text-[var(--color-foreground)]">{detail.value}</dd>
+              <div key={detail.label} className="reg-info">
+                <p className="reg-info-label">{detail.label}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-[var(--color-foreground)]/90">{detail.value}</p>
               </div>
             ))}
-          </dl>
+          </div>
         </div>
 
-        <div className="lg:sticky lg:top-24">
-          <h2 className="mb-4 text-xl font-semibold">Register for {event.name}</h2>
-          <RegisterForm event={event} />
-        </div>
+        <RegisterForm event={event} />
       </div>
     </section>
   );

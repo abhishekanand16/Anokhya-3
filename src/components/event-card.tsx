@@ -1,11 +1,12 @@
-import Link from "next/link";
+﻿import Link from "next/link";
+import type { CSSProperties } from "react";
 import { ArrowRight, Camera } from "lucide-react";
 import type { EventDetail } from "@/data/events";
-import { categoryColor, eventIcons } from "@/lib/event-visuals";
+import { defaultAccent, eventAccents, eventIcons } from "@/lib/event-visuals";
 
 export function EventCard({ event }: { event: EventDetail }) {
   const Icon = eventIcons[event.slug] ?? Camera;
-  const color = categoryColor[event.category];
+  const accent = eventAccents[event.slug] ?? defaultAccent;
   const teamLabel =
     event.teamSize.max === 1 ? "Solo" : `Team of ${event.teamSize.max}`;
 
@@ -13,33 +14,34 @@ export function EventCard({ event }: { event: EventDetail }) {
     <Link
       href={`/events/${event.slug}`}
       data-enter="reveal"
-      className="glass-panel group flex flex-col gap-4 p-6 transition-colors hover:bg-white/[0.06]"
+      className="event-card group flex flex-col gap-5 p-7"
+      style={{ "--accent": accent } as CSSProperties}
     >
-      <div
-        className="flex h-11 w-11 items-center justify-center rounded-2xl"
-        style={{ backgroundColor: `${color}1a`, color }}
-      >
-        <Icon size={22} aria-hidden />
+      <div className="flex items-center justify-between">
+        <div className="event-icon">
+          <Icon size={22} strokeWidth={1.6} aria-hidden />
+        </div>
+        <span className="event-category">{event.category}</span>
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold text-[var(--color-foreground)]">{event.name}</h3>
-        <p className="mt-1.5 text-sm leading-relaxed text-[var(--color-muted-foreground)]">{event.eventType}</p>
+        <h3 className="text-xl font-semibold tracking-tight text-[var(--color-foreground)]">
+          {event.name}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+          {event.eventType}
+        </p>
       </div>
 
-      <div className="mt-auto flex items-center justify-between pt-2">
-        <span
-          className="chip"
-          style={{
-            color: "var(--color-electric)",
-            borderColor: "color-mix(in srgb, var(--color-electric) 40%, transparent)",
-          }}
-        >
+      <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-4">
+        <span className="text-xs font-medium tracking-wide text-[var(--color-muted-foreground)]">
           {teamLabel}
         </span>
-        <span className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-electric)] transition-transform group-hover:translate-x-0.5">
+        <span className="event-cta">
           Register
-          <ArrowRight size={14} aria-hidden />
+          <span className="event-arrow">
+            <ArrowRight size={14} aria-hidden />
+          </span>
         </span>
       </div>
     </Link>
