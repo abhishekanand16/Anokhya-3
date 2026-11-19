@@ -16,26 +16,51 @@ forms need Supabase (below) before they can actually save anyone.
 ### Connect Supabase (for registrations to work)
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. Open the SQL editor and run [`supabase/schema.sql`](./supabase/schema.sql) once. It creates the
-   `registrations` table and locks it down with RLS so the public can only ever *insert* a row —
-   never read, edit, or delete one back out.
-3. Copy `.env.example` to `.env.local` and fill in your project's URL and **anon** key
-   (Project Settings → API):
+2. Open the SQL editor and run [`supabase/schema.sql`](./supabase/schema.sql). It is safe to re-run. It creates:
+   - `events` — team size, **capacity** (15 / 16 / 32 teams) and an open/closed switch per event.
+   - `registrations` — one row per team.
+   - `register_team()` — the only way a registration is written. In one transaction it checks the event is
+     open, the team size is valid, a slot is free (first-come, first-served, race-safe), and that nobody on
+     the team (leader *or* member, by email or USN) is already registered for that event.
+   - RLS locks both tables so the public/anon key can't read or write anything.
+3. Copy `.env.example` to `.env.local` and fill it in (Project Settings → API):
 
    ```bash
    cp .env.example .env.local
    ```
 
-4. Restart `npm run dev`. Submit a test registration on any `/events/<slug>` page, then check the
-   `registrations` table in the Supabase dashboard (that's also how organizers read entries — there's
-   no admin page here on purpose, keep participant data out of the public bundle).
+   - `SUPABASE_URL` — project URL.
+   - `SUPABASE_SERVICE_ROLE_KEY` — the **service_role** secret (not the anon key). Server-only.
+   - `ADMIN_TOKEN` — any long random string (`openssl rand -hex 32`); enables the organizer export below.
+
+4. Restart `npm run dev`, submit a test registration on any `/events/<slug>` page, and check the
+   `registrations` table in the Supabase dashboard.
+
+### Backend endpoints
+
+| Endpoint | Auth | What it does |
+| --- | --- | --- |
+| `registerForEvent` server action (`src/app/events/[slug]/actions.ts`) | public | Validates the form and calls `register_team()`. |
+| `GET /api/events/slots` | public | Powers the "X of N spots left" badges. Live `capacity` / `registered` / `slotsLeft` / `open` per event. Counts only. |
+| `GET /api/admin/registrations?event=<slug>&format=csv\|json` | `Authorization: Bearer <ADMIN_TOKEN>` | Organizer export. CSV is one row per participant. |
+
+```bash
+curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+  "https://anokhya.site/api/admin/registrations?event=bgmi" -o bgmi.csv
+```
+
+To close one event early, use the separate admin dashboard (`anokhya-admin`), or set `registration_open` to `false`
+on its row in the `events` table. The event page then shows a "Registrations are closed" notice instead of the
+form, and the database rejects any submission that still comes through.
+To change a capacity or team size, edit the `insert into public.events` block in `schema.sql` and re-run it
+(keep it in sync with `src/data/events.ts`).
 
 ### Deploy to Vercel
 
 1. Push this repo to GitHub/GitLab/Bitbucket (or `vercel` CLI → `vercel`).
 2. Import it in [Vercel](https://vercel.com/new). Framework preset `Next.js` is auto-detected.
-3. Add the two env vars from `.env.example` under Project Settings → Environment Variables
-   (`SUPABASE_URL`, `SUPABASE_ANON_KEY`).
+3. Add the three env vars from `.env.example` under Project Settings → Environment Variables
+   (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_TOKEN`).
 4. Deploy. No other config needed — `next.config.ts` has no custom build steps.
 
 ---
@@ -47,10 +72,8 @@ forms need Supabase (below) before they can actually save anyone.
 - One dark, glassmorphic theme matching the official Anokhya branding (not light/dark — the fest has a
   fixed visual identity, so a theme toggle would fight the brand rather than serve it).
 - Content (event rules, dates, prize pool) is transcribed from the official sponsorship deck and the
-  "Final" poster. Two assumptions worth double-checking against the organizing team:
-  - **Date**: the sponsorship deck says "02–03 December 2026", but the final poster says
-    **Saturday, 28 November 2026**. The site uses the poster date (`src/data/site.ts`) since it's the
-    more recent asset — confirm and fix if that's wrong.
+  "Final" poster. One assumption worth double-checking against the organizing team:
+  - **Date**: Saturday, 4 December 2026 (confirmed by the organizers) — set in `src/data/site.ts`.
   - **Schedule times**: the deck has no per-event timings, so `src/data/schedule.ts` has a placeholder
     run-of-day, clearly labeled "Tentative" on the page. Edit that file once real timings exist.
 - No personal contact details (student coordinator names/phone numbers from the sponsorship deck) are
@@ -73,5 +96,6 @@ src/
   data/           site/events/schedule content — the single source of truth
   lib/            supabase client, zod validation, small utils
 supabase/
-  schema.sql      registrations table + RLS policy
+  schema.sql      events + registrations tables, register_team(), RLS
+  api/            /api/events/slots, /api/admin/registrations (under src/app)
 ```

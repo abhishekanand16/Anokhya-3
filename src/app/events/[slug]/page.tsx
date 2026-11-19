@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Camera, Users } from "lucide-react";
 import { events, getEventBySlug } from "@/data/events";
 import { eventIcons } from "@/lib/event-visuals";
-import { RegisterForm } from "@/components/register-form";
+import { RegisterGate } from "@/components/register-gate";
+import { SlotsBadge } from "@/components/slots-badge";
 
 const accents: Record<string, string> = {
   "picture-to-prompt": "#6cc3d5",
@@ -74,6 +75,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               {teamLabel}
             </span>
             {event.capacityNote && <span className="reg-chip reg-chip-muted">{event.capacityNote}</span>}
+            <SlotsBadge slug={event.slug} variant="chip" />
           </div>
 
           <div className="mt-8 space-y-3">
@@ -86,7 +88,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
 
-        <RegisterForm event={event} />
+        <RegisterGate event={event} />
       </div>
     </section>
   );

@@ -1,23 +1,26 @@
 import { createClient } from "@supabase/supabase-js";
 
 /**
- * Server-only Supabase client for writing registrations.
+ * Server-only Supabase client.
  *
- * Intentionally NOT exposed to the client bundle (no `NEXT_PUBLIC_` prefix):
- * every insert happens inside a server action. The anon key only ever grants
- * `insert` on `registrations` per supabase/schema.sql's RLS policy, so it
- * cannot read or modify existing rows even if it leaked.
+ * Uses the **service role** key, which bypasses RLS. That is safe here only
+ * because this module is imported exclusively from server actions and route
+ * handlers, and the variable has no `NEXT_PUBLIC_` prefix, so it is never
+ * shipped to the browser. Never import this from a "use client" component.
  *
- * Returns `null` when the project hasn't configured Supabase yet, so the
- * site still builds and renders before real keys are added.
+ * The tables and functions in supabase/schema.sql are deliberately closed to
+ * the anon key, so a leaked anon key can't read or write registrations.
+ *
+ * Returns `null` when Supabase isn't configured yet, so the site still builds
+ * and renders before real keys are added.
  */
 export function getSupabaseServerClient() {
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) return null;
 
   return createClient(url, key, {
-    auth: { persistSession: false },
+    auth: { persistSession: false, autoRefreshToken: false },
   });
 }
