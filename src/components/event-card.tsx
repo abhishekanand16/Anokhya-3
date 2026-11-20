@@ -39,7 +39,7 @@ export function EventCard({ event }: { event: EventDetail }) {
       <div className="mt-auto flex items-center justify-between border-t border-white/[0.07] pt-4">
         <span className="flex flex-col gap-0.5">
           <span className="text-xs font-medium tracking-wide text-[var(--color-muted-foreground)]">
-            {teamLabel}
+            {teamLabel} · Prize pool {event.prizePool}
           </span>
           <SlotsBadge slug={event.slug} />
         </span>

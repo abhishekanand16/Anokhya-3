@@ -2,7 +2,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Camera, Users } from "lucide-react";
+import { ArrowLeft, Camera, Trophy, Users } from "lucide-react";
 import { events, getEventBySlug } from "@/data/events";
 import { eventIcons } from "@/lib/event-visuals";
 import { RegisterGate } from "@/components/register-gate";
@@ -73,6 +73,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <span className="reg-chip">
               <Users size={14} aria-hidden />
               {teamLabel}
+            </span>
+            <span className="reg-chip">
+              <Trophy size={14} aria-hidden />
+              Prize pool {event.prizePool}
             </span>
             {event.capacityNote && <span className="reg-chip reg-chip-muted">{event.capacityNote}</span>}
             <SlotsBadge slug={event.slug} variant="chip" />

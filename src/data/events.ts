@@ -1,4 +1,3 @@
-
 export type EventCategory = "AI" | "Gaming" | "Outdoor" | "Creative";
 
 export type EventDetail = {
@@ -14,6 +13,8 @@ export type EventDetail = {
   teamSize: { min: number; max: number };
   /** Extra constraint shown alongside team size, e.g. a cap on slots. */
   capacityNote?: string;
+  /** Prize pool for this event, display-ready. */
+  prizePool: string;
 };
 
 /**
@@ -33,6 +34,7 @@ export const events: EventDetail[] = [
       "Limited to 15 teams. Registrations are on a first-come, first-served (FCFS) basis.",
     teamSize: { min: 2, max: 2 },
     capacityNote: "Limited to 15 teams (FCFS)",
+    prizePool: "₹3,000",
   },
 
   {
@@ -46,6 +48,7 @@ export const events: EventDetail[] = [
       "Limited to 16 teams. All matches will be conducted offline on the day of the event. Strict fair-play rules apply.",
     teamSize: { min: 4, max: 4 },
     capacityNote: "16 teams — Offline tournament",
+    prizePool: "₹6,000",
   },
 
   {
@@ -60,8 +63,10 @@ export const events: EventDetail[] = [
     judging:
       "Based on problem-solving abilities, strategy, accuracy, and teamwork throughout the qualification rounds.",
     rules:
-      "There is no restriction on the number of participating teams. Teams will compete in qualification rounds, with only selected top-performing teams advancing to the next round.",
+      "Limited to 16 teams. Registrations are on a first-come, first-served (FCFS) basis. Teams will compete in qualification rounds, with only selected top-performing teams advancing to the next round.",
     teamSize: { min: 4, max: 5 },
+    capacityNote: "Limited to 16 teams (FCFS)",
+    prizePool: "₹6,000",
   },
 
   {
@@ -75,6 +80,7 @@ export const events: EventDetail[] = [
       "Limited to 32 teams. Online qualification round dates will be announced soon. The selected teams will advance to the offline finals. Strict fair-play rules apply.",
     teamSize: { min: 5, max: 5 },
     capacityNote: "32 teams — Online qualifiers, offline finals",
+    prizePool: "₹6,000",
   },
 ];
 
