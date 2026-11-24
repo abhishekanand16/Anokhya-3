@@ -1,5 +1,7 @@
 import { z } from "zod";
 import type { EventDetail } from "@/data/events";
+import { getEventTerms } from "@/data/terms";
+import { termsAccepted } from "@/lib/terms-gate";
 
 const phoneRegex = /^[0-9+\-\s()]{7,16}$/;
 
@@ -36,6 +38,11 @@ export function buildRegistrationSchema(event: EventDetail) {
       teamName: maxMembers > 0 ? z.string().trim().min(2, "Enter a team name").max(80) : z.string().optional(),
       leader: participantSchema,
       members: z.array(participantSchema).min(minMembers).max(maxMembers),
+      ...(getEventTerms(event.slug)
+        ? {
+            agreeTerms: z.unknown().refine(termsAccepted, "You must agree to the terms and conditions before registering."),
+          }
+        : {}),
     })
     .superRefine((data, ctx) => {
       // The same person can't appear twice in one team.

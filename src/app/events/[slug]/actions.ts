@@ -1,6 +1,8 @@
 "use server";
 
 import { getEventBySlug } from "@/data/events";
+import { getEventTerms } from "@/data/terms";
+import { termsAccepted } from "@/lib/terms-gate";
 import { buildRegistrationSchema, type Participant } from "@/lib/validation";
 import { getSupabaseServerClient } from "@/lib/supabase-server";
 import type { RegisterActionState } from "@/lib/register-state";
@@ -50,12 +52,22 @@ export async function registerForEvent(
   }
 
   const schema = buildRegistrationSchema(event);
+  const requiresTerms = Boolean(getEventTerms(event.slug));
   const parsed = schema.safeParse({
     eventSlug: event.slug,
     teamName: String(formData.get("teamName") ?? ""),
     leader: readParticipant(formData, "leader"),
     members,
+    ...(requiresTerms ? { agreeTerms: formData.get("agreeTerms") } : {}),
   });
+
+  if (requiresTerms && !termsAccepted(formData.get("agreeTerms"))) {
+    return {
+      status: "error",
+      message: "You must agree to the terms and conditions before registering.",
+      fieldErrors: { agreeTerms: "You must agree to the terms and conditions before registering." },
+    };
+  }
 
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
