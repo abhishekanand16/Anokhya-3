@@ -1,7 +1,7 @@
 ﻿"use client";
 
-import { useActionState, useRef, useState } from "react";
-import type { InputHTMLAttributes, ReactNode } from "react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import type { FormEvent, InputHTMLAttributes, ReactNode } from "react";
 import { ArrowRight, CheckCircle2, Crown, Users } from "lucide-react";
 import type { EventDetail } from "@/data/events";
 import { registerForEvent } from "@/app/events/[slug]/actions";
@@ -89,6 +89,23 @@ export function RegisterForm({ event }: { event: EventDetail }) {
     setProgress(inputs.length ? Math.round((filled / inputs.length) * 100) : 0);
   };
 
+  // After a failed submit, jump to the first field with an error.
+  useEffect(() => {
+    if (state.status !== "error" || !state.fieldErrors) return;
+    formRef.current?.querySelector(".field-error")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [state]);
+
+  // Submit by hand instead of `<form action={...}>`. React 19 clears every field after a
+  // form action finishes — even when the server returned errors — which would wipe a
+  // 4-5 person team's details. Calling the action ourselves keeps whatever was typed.
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
   if (state.status === "success") {
     return (
       <div className="reg-shell flex flex-col items-center gap-3 py-14 text-center">
@@ -116,7 +133,7 @@ export function RegisterForm({ event }: { event: EventDetail }) {
         <span style={{ width: `${progress}%` }} />
       </div>
 
-      <form ref={formRef} action={formAction} onChange={updateProgress} className="mt-6 space-y-4" noValidate>
+      <form ref={formRef} onSubmit={handleSubmit} onChange={updateProgress} className="mt-6 space-y-4" noValidate>
         <input type="hidden" name="eventSlug" value={event.slug} />
 
         {isTeamEvent && (
