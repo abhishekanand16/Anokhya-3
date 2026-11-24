@@ -3,7 +3,7 @@
 import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import type { FormEvent, InputHTMLAttributes, ReactNode } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Crown, Users } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, Crown, Users } from "lucide-react";
 import type { EventDetail } from "@/data/events";
 import { getEventTerms } from "@/data/terms";
 import { registerForEvent } from "@/app/events/[slug]/actions";
@@ -195,12 +195,15 @@ export function RegisterForm({ event }: { event: EventDetail }) {
 
         {terms && (
           <div className="reg-section">
-            <div className="reg-legend">
-              <span className="reg-legend-inner">Terms and conditions</span>
-            </div>
-            <div className="reg-terms" tabIndex={0}>
-              <EventTermsBody terms={terms} />
-            </div>
+            <details className="reg-terms-details">
+              <summary>
+                Terms and conditions
+                <ChevronDown size={16} aria-hidden />
+              </summary>
+              <div className="reg-terms">
+                <EventTermsBody terms={terms} />
+              </div>
+            </details>
             <label className="reg-agree">
               <input
                 name="agreeTerms"
