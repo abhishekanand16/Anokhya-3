@@ -141,6 +141,61 @@ export const eventTerms: EventTerms[] = [
     ],
     closing,
   },
+  {
+    slug: "radiant-clash",
+    title: "Valorant",
+    preamble: opening("Radiant Clash — Valorant Showdown"),
+    sections: [
+      {
+        heading: "1. Tournament format",
+        body: [
+          "The tournament has 32 teams and uses single elimination. A team is eliminated as soon as it loses a match. Only the winning team advances.",
+          "The bracket runs Round of 32, Round of 16, Quarter-Finals, Semi-Finals, and Grand Finals. A team that reaches the Grand Finals may play at most five matches in total.",
+        ],
+      },
+      {
+        heading: "2. Online matches",
+        body: [
+          "Every match up to and including the Quarter-Finals is played online. Players may compete from home or any suitable location with a stable connection.",
+          "Each team is responsible for its own PC, peripherals, and internet. Schedules and prior information are shared with teams in advance.",
+          "Opponent details, lobby information, and match instructions are provided no later than 10 minutes before the match begins. Every player must join using the Riot ID registered with the organizers.",
+        ],
+      },
+      {
+        heading: "3. Semi-finals and grand finals (offline)",
+        body: [
+          "Semi-Finals and Grand Finals are held on the college campus. Attendance is mandatory for every player on a qualifying team.",
+          "Players bring their own laptops, chargers, and gaming peripherals. The college provides Wi-Fi and charging points. Devices must be fully charged and ready before play begins.",
+          "A player or team that fails to report to the venue may be disqualified.",
+        ],
+      },
+      {
+        heading: "4. Match timing and technical issues",
+        body: [
+          "Teams must be ready at the scheduled match time. A grace period of up to 10 minutes applies. A team that does not join within that period forfeits the match; the opponent receives a walkover.",
+          "Internet, system, or technical problems must be reported to the organizers at once. Decisions on delays or interruptions are made by the organizers.",
+        ],
+      },
+      {
+        heading: "5. Fair play and anti-cheating",
+        body: [
+          "Hacking, cheating, scripting, bug exploitation, and unauthorized third-party software are prohibited. Matches are monitored by the organizers; suspicious activity may be investigated.",
+          "Confirmed cheating results in immediate disqualification and a ban from this tournament. The opposing team is awarded a walkover. The organizers may review recordings and gameplay evidence before deciding.",
+        ],
+      },
+      {
+        heading: "6. Conduct, roster, and general rules",
+        body: [
+          "Players must keep proper sportsmanship. Toxic behaviour, abusive language, harassment, deliberate match disruption, intentional bug or glitch abuse, account sharing, and unauthorized players are not tolerated.",
+          "Only registered players may compete; unauthorized substitutions are not allowed. Team details and Riot IDs must be correct at registration. Teams follow the schedule and instructions from the coordinators.",
+          "Players must not intentionally delay, abandon, or interfere with matches. Results are reported or confirmed to the organizers after each game. Rule violations may lead to warnings, forfeits, or disqualification.",
+          "At the offline venue, participants follow all college rules and instructions from staff.",
+          "Disputes are reported to the organizers immediately. The organizers may investigate gameplay, adjust schedules when unavoidable, and settle all disputes. Their decision is final and binding.",
+        ],
+      },
+    ],
+    closing,
+  },
 ];
 
 export function getEventTerms(slug: string): EventTerms | undefined {
