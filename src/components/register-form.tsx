@@ -2,10 +2,14 @@
 
 import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import type { FormEvent, InputHTMLAttributes, ReactNode } from "react";
-import { ArrowRight, CheckCircle2, Crown, Users } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, ChevronDown, Crown, Users } from "lucide-react";
 import type { EventDetail } from "@/data/events";
+import { getEventTerms } from "@/data/terms";
 import { registerForEvent } from "@/app/events/[slug]/actions";
+import { EventTermsBody } from "@/components/event-terms";
 import { initialRegisterState } from "@/lib/register-state";
+import { termsAccepted } from "@/lib/terms-gate";
 import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
 
@@ -78,14 +82,16 @@ export function RegisterForm({ event }: { event: EventDetail }) {
   const [state, formAction, isPending] = useActionState(registerForEvent, initialRegisterState);
   const formRef = useRef<HTMLFormElement>(null);
   const [progress, setProgress] = useState(0);
+  const [agreed, setAgreed] = useState(false);
   const extraMembers = event.teamSize.max - 1;
   const isTeamEvent = extraMembers > 0;
+  const terms = getEventTerms(event.slug);
 
   const updateProgress = () => {
     const form = formRef.current;
     if (!form) return;
     const inputs = Array.from(form.querySelectorAll<HTMLInputElement>("input[required]"));
-    const filled = inputs.filter((input) => input.value.trim() !== "").length;
+    const filled = inputs.filter((input) => (input.type === "checkbox" ? input.checked : input.value.trim() !== "")).length;
     setProgress(inputs.length ? Math.round((filled / inputs.length) * 100) : 0);
   };
 
@@ -98,9 +104,10 @@ export function RegisterForm({ event }: { event: EventDetail }) {
   // Submit by hand instead of `<form action={...}>`. React 19 clears every field after a
   // form action finishes — even when the server returned errors — which would wipe a
   // 4-5 person team's details. Calling the action ourselves keeps whatever was typed.
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+  const handleSubmit = (submitEvent: FormEvent<HTMLFormElement>) => {
+    submitEvent.preventDefault();
+    const formData = new FormData(submitEvent.currentTarget);
+    if (terms && !termsAccepted(formData.get("agreeTerms"))) return;
     startTransition(() => {
       formAction(formData);
     });
@@ -186,7 +193,42 @@ export function RegisterForm({ event }: { event: EventDetail }) {
           <p className="text-sm text-[#f28b82]">{state.message}</p>
         )}
 
-        <button type="submit" disabled={isPending} className={cn("reg-submit", isPending && "is-pending")}>
+        {terms && (
+          <div className="reg-section">
+            <details className="reg-terms-details">
+              <summary>
+                Terms and conditions
+                <ChevronDown size={16} aria-hidden />
+              </summary>
+              <div className="reg-terms">
+                <EventTermsBody terms={terms} />
+              </div>
+            </details>
+            <label className="reg-agree">
+              <input
+                name="agreeTerms"
+                type="checkbox"
+                value="on"
+                required
+                checked={agreed}
+                onChange={(change) => setAgreed(change.target.checked)}
+              />
+              <span>
+                I agree to the{" "}
+                <Link href={`/events/${event.slug}/terms`} className="reg-agree-link">
+                  terms and conditions
+                </Link>
+              </span>
+            </label>
+            {state.fieldErrors?.agreeTerms && <p className="field-error">{state.fieldErrors.agreeTerms}</p>}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={isPending || (Boolean(terms) && !agreed)}
+          className={cn("reg-submit", isPending && "is-pending")}
+        >
           {isPending ? "Submitting..." : "Submit registration"}
           {!isPending && <ArrowRight size={16} aria-hidden />}
         </button>
