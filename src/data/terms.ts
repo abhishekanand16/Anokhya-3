@@ -125,14 +125,21 @@ export const eventTerms: EventTerms[] = [
       {
         heading: "2. Matches",
         body: [
-          "The mode is Classic, Squad, third-person. There are 4 matches: 2 on Erangel, 1 on Rondo, and 1 on Miramar.",
-          "Every player downloads Erangel, Rondo, and Miramar before the tournament. A match is not delayed for a player who has not downloaded a map.",
+          "The mode is Classic, Squad, third-person. There are 4 matches in total. Map locations for each match are listed in section 3.",
           "The room ID and password are shared 15 minutes before the match. A team joins its assigned slot at least 5 minutes before the start time. Matches start on time. A team that is missing players plays short-handed. There is no delay for a latecomer.",
           "In room chat, spam, abuse, and sharing the room ID or password with anyone outside the room are prohibited and result in an immediate kick or disqualification.",
         ],
       },
       {
-        heading: "3. Fair play",
+        heading: "3. Maps",
+        body: [
+          "The tournament uses 4 maps: 2 on Erangel, 1 on Miramar, and 1 on Rondo.",
+          "Match 1 — Erangel. Match 2 — Erangel. Match 3 — Miramar. Match 4 — Rondo.",
+          "Every player downloads Erangel, Miramar, and Rondo before the tournament. A match is not delayed for a player who has not downloaded a map.",
+        ],
+      },
+      {
+        heading: "4. Fair play",
         body: [
           "Cheating is prohibited. That includes hacks, ESP, aimbots, GFX tools, modified config files, and third-party scripts. A player or team caught cheating is disqualified and banned from this tournament.",
           "Teaming with a rival squad is prohibited. That includes sharing loot, avoiding a fight, or feeding a kill. Every team involved is disqualified.",
