@@ -46,6 +46,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     { label: "Format", value: event.format },
     ...(event.task ? [{ label: "Task", value: event.task }] : []),
     ...(event.rules ? [{ label: "Rules", value: event.rules }] : []),
+    ...(event.maps ? [{ label: "Maps", value: event.maps }] : []),
     ...(event.judging ? [{ label: "Judging criteria", value: event.judging }] : []),
   ];
 

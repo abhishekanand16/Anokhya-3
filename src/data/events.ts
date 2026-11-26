@@ -7,6 +7,8 @@ export type EventDetail = {
   eventType: string;
   format: string;
   rules?: string;
+  /** Shown on the event page as an extra info card (e.g. match maps). */
+  maps?: string;
   judging?: string;
   task?: string;
   /** Exact team size required. 1 means solo. */
@@ -46,6 +48,8 @@ export const events: EventDetail[] = [
       "An offline battle royale tournament featuring 16 teams of 4 players competing against each other.",
     rules:
       "Limited to 16 teams. All matches will be conducted offline on the day of the event. Strict fair-play rules apply.",
+    maps:
+      "Four Classic Squad matches (TPP): 2 on Erangel, 1 on Miramar, and 1 on Rondo — Match 1 Erangel, Match 2 Erangel, Match 3 Miramar, Match 4 Rondo. Download Erangel, Miramar, and Rondo before the tournament.",
     teamSize: { min: 4, max: 4 },
     capacityNote: "16 teams — Offline tournament",
     prizePool: "₹6,000",
