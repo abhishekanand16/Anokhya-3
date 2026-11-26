@@ -74,6 +74,7 @@ export function EventCard({ event }: { event: EventDetail }) {
   return (
     <Link
       href={`/events/${event.slug}`}
+      scroll
       data-enter="reveal"
       className="event-card group flex flex-col gap-5 p-7"
       style={{ "--accent": accent } as CSSProperties}
