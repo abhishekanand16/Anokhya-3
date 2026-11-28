@@ -157,13 +157,13 @@ export const eventTerms: EventTerms[] = [
         heading: "1. Tournament format",
         body: [
           "The tournament has 32 teams and uses single elimination. A team is eliminated as soon as it loses a match. Only the winning team advances.",
-          "The bracket runs Round of 32, Round of 16, Quarter-Finals, Semi-Finals, and Grand Finals. A team that reaches the Grand Finals may play at most five matches in total.",
+          "The online bracket runs Round of 32, Round of 16, and Quarter-Finals. The top 4 teams qualify for the offline Semi-Finals and Grand Finals on campus.",
         ],
       },
       {
         heading: "2. Online matches",
         body: [
-          "Every match up to and including the Quarter-Finals is played online. Players may compete from home or any suitable location with a stable connection.",
+          "Every online-round match up to and including the Quarter-Finals is played online. The four teams that survive the Quarter-Finals advance to the offline campus stage. Players may compete from home or any suitable location with a stable connection.",
           "Each team is responsible for its own PC, peripherals, and internet. Schedules and prior information are shared with teams in advance.",
           "Opponent details, lobby information, and match instructions are provided no later than 10 minutes before the match begins. Every player must join using the Riot ID registered with the organizers.",
         ],

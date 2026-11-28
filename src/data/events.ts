@@ -33,7 +33,7 @@ export const events: EventDetail[] = [
     judging:
       "Based on prompt accuracy, creativity, clarity, and how closely the AI-generated output matches the given image.",
     rules:
-      "Limited to 15 teams. Registrations are on a first-come, first-served (FCFS) basis.",
+      "Limited to 15 teams of 2. Registrations are on a first-come, first-served (FCFS) basis.",
     teamSize: { min: 2, max: 2 },
     capacityNote: "Limited to 15 teams (FCFS)",
     prizePool: "₹3,000",
@@ -47,7 +47,7 @@ export const events: EventDetail[] = [
     format:
       "An offline battle royale tournament featuring 16 teams of 4 players competing against each other.",
     rules:
-      "Limited to 16 teams. All matches will be conducted offline on the day of the event. Strict fair-play rules apply.",
+      "Limited to 16 squads of 4 players. All matches will be conducted offline on the day of the event. Strict fair-play rules apply.",
     maps:
       "Four Classic Squad matches (TPP): 2 on Erangel, 1 on Miramar, and 1 on Rondo — Match 1 Erangel, Match 2 Erangel, Match 3 Miramar, Match 4 Rondo. Download Erangel, Miramar, and Rondo before the tournament.",
     teamSize: { min: 4, max: 4 },
@@ -67,7 +67,7 @@ export const events: EventDetail[] = [
     judging:
       "Based on problem-solving abilities, strategy, accuracy, and teamwork throughout the qualification rounds.",
     rules:
-      "Limited to 16 teams. Registrations are on a first-come, first-served (FCFS) basis. Teams will compete in qualification rounds, with only selected top-performing teams advancing to the next round.",
+      "Limited to 16 teams of 4–5 members. Registrations are on a first-come, first-served (FCFS) basis. Teams will compete in qualification rounds, with only selected top-performing teams advancing to the next round.",
     teamSize: { min: 4, max: 5 },
     capacityNote: "Limited to 16 teams (FCFS)",
     prizePool: "₹6,000",
@@ -79,15 +79,31 @@ export const events: EventDetail[] = [
     category: "Gaming",
     eventType: "PC-based Valorant tournament for competitive gaming enthusiasts.",
     format:
-      "32 teams of 5 players compete in online qualification rounds. The top 8 teams will qualify for the offline finals conducted on the day of the event.",
+      "32 teams of 5 players compete in online qualification rounds. The top 4 teams qualify for the offline Semi-Finals and Grand Finals on event day.",
     rules:
-      "Limited to 32 teams. Online qualification round dates will be announced soon. The selected teams will advance to the offline finals. Strict fair-play rules apply.",
+      "Limited to 32 teams of 5. Online qualification round dates will be announced soon. The top 4 teams advance to the offline campus finals. Strict fair-play rules apply.",
     teamSize: { min: 5, max: 5 },
-    capacityNote: "32 teams — Online qualifiers, offline finals",
+    capacityNote: "32 teams — Top 4 offline finals",
     prizePool: "₹6,000",
   },
 ];
 
 export function getEventBySlug(slug: string): EventDetail | undefined {
   return events.find((event) => event.slug === slug);
+}
+
+/** Human-readable team size for chips and event headers. */
+export function formatTeamSizeLabel(
+  teamSize: EventDetail["teamSize"],
+  style: "short" | "page" = "short",
+): string {
+  if (teamSize.max === 1) {
+    return style === "page" ? "Solo participation" : "Solo";
+  }
+  if (teamSize.min === teamSize.max) {
+    const n = teamSize.max;
+    return style === "page" ? `Teams of ${n}` : `Team of ${n}`;
+  }
+  const range = `Teams of ${teamSize.min}–${teamSize.max}`;
+  return style === "page" ? range : range.replace("Teams", "Team");
 }

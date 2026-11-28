@@ -84,6 +84,7 @@ export function RegisterForm({ event }: { event: EventDetail }) {
   const [progress, setProgress] = useState(0);
   const [agreed, setAgreed] = useState(false);
   const extraMembers = event.teamSize.max - 1;
+  const requiredExtraMembers = event.teamSize.min - 1;
   const isTeamEvent = extraMembers > 0;
   const terms = getEventTerms(event.slug);
 
@@ -178,7 +179,11 @@ export function RegisterForm({ event }: { event: EventDetail }) {
           <ParticipantFields
             key={i}
             prefix={`members.${i}`}
-            heading={`Team member ${i + 2}`}
+            heading={
+              i >= requiredExtraMembers
+                ? `Team member ${i + 2} (optional)`
+                : `Team member ${i + 2}`
+            }
             badge={i + 2}
             fieldErrors={state.fieldErrors}
           />

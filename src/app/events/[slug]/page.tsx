@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Camera, Trophy, Users } from "lucide-react";
-import { events, getEventBySlug } from "@/data/events";
+import { events, formatTeamSizeLabel, getEventBySlug } from "@/data/events";
 import { eventIcons } from "@/lib/event-visuals";
 import { RegisterGate } from "@/components/register-gate";
 import { SlotsBadge } from "@/components/slots-badge";
@@ -40,7 +40,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   const Icon = eventIcons[event.slug] ?? Camera;
   const accent = accents[event.slug] ?? "#e8a255";
-  const teamLabel = event.teamSize.max === 1 ? "Solo participation" : `Teams of ${event.teamSize.max}`;
+  const teamLabel = formatTeamSizeLabel(event.teamSize, "page");
 
   const details: { label: string; value: string }[] = [
     { label: "Format", value: event.format },

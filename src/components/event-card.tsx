@@ -3,7 +3,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { ArrowRight, Camera, Lock } from "lucide-react";
-import type { EventDetail } from "@/data/events";
+import { formatTeamSizeLabel, type EventDetail } from "@/data/events";
 import { defaultAccent, eventAccents, eventIcons } from "@/lib/event-visuals";
 import { SlotsBadge, useEventSlot } from "@/components/slots-badge";
 
@@ -11,8 +11,7 @@ export function EventCard({ event }: { event: EventDetail }) {
   const slot = useEventSlot(event.slug);
   const Icon = eventIcons[event.slug] ?? Camera;
   const accent = eventAccents[event.slug] ?? defaultAccent;
-  const teamLabel =
-    event.teamSize.max === 1 ? "Solo" : `Team of ${event.teamSize.max}`;
+  const teamLabel = formatTeamSizeLabel(event.teamSize, "short");
 
   // Full, or closed by the organizers: black the card out and make it unclickable.
   const unavailable = slot !== null && !slot.open;
