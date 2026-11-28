@@ -118,6 +118,33 @@ declare
 begin
   p_members := coalesce(p_members, '[]'::jsonb);
 
+  -- A completely empty optional seat (the unused 5th player) is not a member.
+  -- A seat that has any field filled is kept and must be complete.
+  select coalesce(jsonb_agg(t.m order by t.ord), '[]'::jsonb)
+    into p_members
+  from jsonb_array_elements(p_members) with ordinality as t(m, ord)
+  where coalesce(
+    nullif(trim(t.m->>'name'), ''),
+    nullif(trim(t.m->>'email'), ''),
+    nullif(trim(t.m->>'usn'), ''),
+    nullif(trim(t.m->>'phone'), ''),
+    nullif(trim(t.m->>'department'), ''),
+    nullif(trim(t.m->>'yearSem'), '')
+  ) is not null;
+
+  if exists (
+    select 1
+    from jsonb_array_elements(p_members) m
+    where nullif(trim(m->>'name'), '') is null
+       or nullif(trim(m->>'email'), '') is null
+       or nullif(trim(m->>'usn'), '') is null
+       or nullif(trim(m->>'phone'), '') is null
+       or nullif(trim(m->>'department'), '') is null
+       or nullif(trim(m->>'yearSem'), '') is null
+  ) then
+    return jsonb_build_object('status', 'invalid_team_size');
+  end if;
+
   -- Row lock: concurrent registrations for the same event queue up here, so
   -- the capacity and duplicate checks below can't race each other.
   select * into v_event from public.events where slug = p_event_slug for update;

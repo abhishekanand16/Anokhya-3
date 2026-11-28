@@ -115,6 +115,15 @@ export async function registerForEvent(
     case "closed":
       return { status: "error", message: `Registrations for ${event.name} are closed.` };
 
+    case "invalid_team_size": {
+      const { min, max } = event.teamSize;
+      const size = min === max ? String(min) : `${min}–${max}`;
+      return {
+        status: "error",
+        message: `A team for ${event.name} must have ${size} players. Leave the optional player blank, or fill in every field for them.`,
+      };
+    }
+
     case "duplicate": {
       // Point the error at whichever person in the form owns the clashing value.
       const people = [leader, ...parsedMembers];
