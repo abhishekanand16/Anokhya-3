@@ -79,10 +79,10 @@ export const events: EventDetail[] = [
     category: "Gaming",
     eventType: "PC-based Valorant tournament for competitive gaming enthusiasts.",
     format:
-      "32 teams of 5 players compete in online qualification rounds. The top 4 teams qualify for the offline Semi-Finals and Grand Finals on event day.",
+      "32 teams of 4–5 players compete in online qualification rounds. The top 4 teams qualify for the offline Semi-Finals and Grand Finals on event day.",
     rules:
-      "Limited to 32 teams of 5. Online qualification round dates will be announced soon. The top 4 teams advance to the offline campus finals. Strict fair-play rules apply.",
-    teamSize: { min: 5, max: 5 },
+      "Limited to 32 teams of 4–5 players. Online qualification round dates will be announced soon. The top 4 teams advance to the offline campus finals. Strict fair-play rules apply.",
+    teamSize: { min: 4, max: 5 },
     capacityNote: "32 teams — Top 4 offline finals",
     prizePool: "₹6,000",
   },

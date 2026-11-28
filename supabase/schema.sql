@@ -32,7 +32,7 @@ insert into public.events (slug, name, team_min, team_max, capacity) values
   ('picture-to-prompt', 'Picture to Prompt', 2, 2, 15),
   ('bgmi', 'BGMI', 4, 4, 16),
   ('treasure-hunt', 'Treasure Hunt', 4, 5, null),
-  ('radiant-clash', 'Radiant Clash — Valorant Showdown', 5, 5, 32)
+  ('radiant-clash', 'Radiant Clash — Valorant Showdown', 4, 5, 32)
 on conflict (slug) do update set
   name = excluded.name,
   team_min = excluded.team_min,
