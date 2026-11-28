@@ -53,7 +53,9 @@ To close one event early, use the separate admin dashboard (`anokhya-admin`), or
 on its row in the `events` table. The event page then shows a "Registrations are closed" notice instead of the
 form, and the database rejects any submission that still comes through.
 To change a capacity or team size, edit the `insert into public.events` block in `schema.sql` and re-run it
-(keep it in sync with `src/data/events.ts`).
+(keep it in sync with `src/data/events.ts`). Treasure Hunt and Valorant are 4–5 players: a blank fifth
+player is ignored, and a half-filled fifth player is rejected. Re-run the file after pulling so the live
+`events` rows and `register_team()` pick that up.
 
 ### Deploy to Vercel
 

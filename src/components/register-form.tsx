@@ -17,14 +17,15 @@ function Field({
   id,
   label,
   error,
+  optional,
   ...props
-}: { id: string; label: string; error?: string } & InputHTMLAttributes<HTMLInputElement>) {
+}: { id: string; label: string; error?: string; optional?: boolean } & InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
       <label className="field-label" htmlFor={id}>
         {label}
       </label>
-      <input id={id} name={id} required className="field-input" {...props} />
+      <input id={id} name={id} required={!optional} className="field-input" {...props} />
       {error && <p className="field-error">{error}</p>}
     </div>
   );
@@ -35,11 +36,14 @@ function ParticipantFields({
   heading,
   badge,
   fieldErrors,
+  optional = false,
 }: {
   prefix: string;
   heading: string;
   badge: ReactNode;
   fieldErrors?: Record<string, string>;
+  /** Extra seat above the event minimum. A fully blank block is not a player. */
+  optional?: boolean;
 }) {
   const error = (field: string) => fieldErrors?.[`${prefix}.${field}`];
 
@@ -52,13 +56,27 @@ function ParticipantFields({
         </span>
       </legend>
 
+      {optional && (
+        <p className="mb-3 text-sm leading-relaxed text-[var(--color-muted-foreground)]">
+          Optional. Leave every field blank, or fill all of them to add this player.
+        </p>
+      )}
+
       <div className="reg-grid grid gap-4 sm:grid-cols-2">
-        <Field id={`${prefix}.name`} label="Name" error={error("name")} autoComplete="name" placeholder="Full name" />
-        <Field id={`${prefix}.usn`} label="USN" error={error("usn")} />
+        <Field
+          id={`${prefix}.name`}
+          label="Name"
+          error={error("name")}
+          optional={optional}
+          autoComplete="name"
+          placeholder="Full name"
+        />
+        <Field id={`${prefix}.usn`} label="USN" error={error("usn")} optional={optional} />
         <Field
           id={`${prefix}.phone`}
           label="Phone number"
           error={error("phone")}
+          optional={optional}
           type="tel"
           autoComplete="tel"
           placeholder="10-digit mobile number"
@@ -67,12 +85,13 @@ function ParticipantFields({
           id={`${prefix}.email`}
           label="Email ID"
           error={error("email")}
+          optional={optional}
           type="email"
           autoComplete="email"
           placeholder="name@example.com"
         />
-        <Field id={`${prefix}.department`} label="Department" error={error("department")} />
-        <Field id={`${prefix}.yearSem`} label="Year" error={error("yearSem")} />
+        <Field id={`${prefix}.department`} label="Department" error={error("department")} optional={optional} />
+        <Field id={`${prefix}.yearSem`} label="Year" error={error("yearSem")} optional={optional} />
       </div>
     </fieldset>
   );
@@ -185,6 +204,7 @@ export function RegisterForm({ event }: { event: EventDetail }) {
                 : `Team member ${i + 2}`
             }
             badge={i + 2}
+            optional={i >= requiredExtraMembers}
             fieldErrors={state.fieldErrors}
           />
         ))}
